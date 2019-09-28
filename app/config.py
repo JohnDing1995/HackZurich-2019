@@ -1,4 +1,5 @@
 from os import environ
 
-DIRECTION_API = "https://maps.googleapis.com/maps/api/directions/json"
-GOOGLE_API_KEY = environ.get('API_KEY', None)
+PLACE_API = "https://api.tomtom.com/search/2/search/.json"
+DIRECTION_API = "https://maps.googleapis.com/maps/api/place"
+API_KEY = environ.get('API_KEY', None)

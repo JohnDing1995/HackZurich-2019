@@ -1,2 +1,4 @@
 requests
 googlemaps
+git+https://github.com/m-wrzr/populartimes
+flask

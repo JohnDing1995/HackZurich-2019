@@ -14,9 +14,9 @@
                 <form>
                     <div class="form-group text-center">
                         <label for="search-query">Plan your city trip here!</label>
-                        <input type="text" class="form-control" id="search-query" name="city"
+                        <input type="text" class="form-control" id="search-query-city" name="city"
                                placeholder="Which place you wanna start?">
-                        <input type="text" class="form-control" id="search-query" name="time"
+                        <input type="text" class="form-control" id="search-query-time" name="time"
                                placeholder="You wanna leave at?">
                     </div>
                     <div class="form-group text-center">
@@ -72,5 +72,9 @@
 <script src="{{ url_for('static', filename='js/map.js') }}/"></script>
 <script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap"
         async defer></script>
+<script
+  src="https://code.jquery.com/jquery-3.4.1.slim.js"
+  integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI="
+  crossorigin="anonymous"></script>
 </body>
 </html>
