@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+<div id="search">
+    <div class="container fill">
+        <div class="row vertical-center">
+            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
+                <form>
+                    <div class="form-group text-center">
+                        <label for="search-query">Plan your city trip here!</label>
+                        <input type="text" class="form-control" id="search-query" name="city"
+                               placeholder="Which place you wanna start?">
+                        <input type="text" class="form-control" id="search-query" name="time"
+                               placeholder="You wanna leave at?">
+                    </div>
+                    <div class="form-group text-center">
+                        <button type="submit" class="btn btn-primary">Get it now!</button>
+                    </div>
+
+                    <div class="form-group advanced-search-panel">
+                        <div class="panel panel-default">
+                            <ul class="list-group">
+                                <!-- add options here -->
+                                <li class="list-group-item">
+                                    <div class="form-group">
+                                        <div class="col-xs-4">
+                                            <label for="search-location">Options</label>
+                                        </div>
+
+                                        <div class="col-xs-8">
+                                            <div class="row">
+                                                <fieldset class="col-xs-12 col-sm-6">
+                                                    <input type="checkbox" name="search-location" value="option1"
+                                                           autocomplete="off" checked>
+                                                    Checkbox 1
+                                                </fieldset>
+
+                                                <fieldset class="col-xs-12 col-sm-6">
+                                                    <input type="checkbox" name="search-location" value="Option 2"
+                                                           autocomplete="off" checked>
+                                                    Checkbox 2
+                                                </fieldset>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <!-- end of options -->
+                            </ul>
+
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="map">
+
+</div>
+<div id="list">
+
+</div>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="{{ url_for('static', filename='js/map.js') }}/"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap"
+        async defer></script>
+</body>
+</html>
