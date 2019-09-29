@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 
 import requests
@@ -18,7 +19,7 @@ with app.app_context():
 
 @app.route('/')
 def main_page():
-    return render_template('main.html', api_key=SYGIC_KEY)
+    return render_template('main.html', api_key=GOOGLE_KEY)
 
 
 @app.route('/api/route')
@@ -37,7 +38,7 @@ def get_tour_route():
         'input':start_point,
         'fields':'geometry'
     })
-    print(start_response.json())
+    random.shuffle(lat_lon_list)
     lat_lon_list.insert(0, (
     start_response.json()['candidates'][0]['geometry']['location']['lat'], start_response.json()['candidates'][0]['geometry']['location']['lng']))
     end_point = request.args.get('end')
@@ -50,12 +51,11 @@ def get_tour_route():
     lat_lon_list.append(
         (end_response.json()['candidates'][0]['geometry']['location']['lat'], end_response.json()['candidates'][0]['geometry']['location']['lng']))
     # Get all route
-    print(lat_lon_list)
-    all_route_mat = get_all_route(lat_lon_list, start_time)
-    argument = Arguments(len(all_route_mat)-2, end_time, all_route_mat, site_list, DESTINATION_INDEX=len(all_route_mat)-1)
-    dfs(0, start_time, 0, argument)
-    print(argument.__dict__)
-    return jsonify()
+    # all_route_mat = get_all_route(lat_lon_list, start_time)
+    # argument = Arguments(len(all_route_mat)-2, end_time, all_route_mat, site_list, DESTINATION_INDEX=len(all_route_mat)-1)
+    # dfs(0, start_time, 0, argument)
+
+    return jsonify(lat_lon_list)
 
 
 @app.route('/api/city/<addr>')
@@ -64,7 +64,6 @@ def get_city(addr):
                                                        'key': TOMTOM_KEY,
                                                        'limit': 1
                                                        })
-    print(places.json())
     city = places.json()['results'][0]['address']['municipality']
     return jsonify({'city': city})
 

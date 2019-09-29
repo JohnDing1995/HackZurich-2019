@@ -1,18 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simple Map</title>
+    <title>EasyTrip</title>
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
-
 </head>
 <body>
-<div id="search">
+<nav class="navbar navbar-light" style="background-color: #2057BF;">
+  <a class="navbar-brand" href="#">
+    <img src="{{ url_for('static', filename='img/logo.png') }}" width="170" height="50" alt="">
+  </a>
+</nav>
+<div id="map">
+</div>
+<div class="row">
+    <div id="search" class="col-sm-6 col-md-6">
     <div class="container fill">
         <div class="row vertical-center">
-            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                <form id="planForm" action="http://127.0.0.1:5000/api/route">
+            <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-8">
+                <form id="planForm" onsubmit="submitForm()">
                     <div class="form-group text-center">
                         <label for="search-query">Plan your city trip here!</label>
                         <input type="text" class="form-control" id="search-query-start" name="start"
@@ -61,18 +68,19 @@
 
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary">Get the route now!</button>
+                    <input type="button" onclick="submitForm()" class="btn btn-primary" value="Get the route now!">
                 </form>
             </div>
         </div>
     </div>
 </div>
-<div id="map">
+    <div id="list" class="col-sm-6 col-md-6">
 
 </div>
-<div id="list">
-
 </div>
+
+
+
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
@@ -80,12 +88,14 @@
 <script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}/"></script>
 
 <script src="{{ url_for('static', filename='js/map.js') }}/"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap&&language=en"
+        async defer></script>
 <script>
     function getDestinations() {
         let address = document.getElementById("search-query-start").value;
         // Get which city
         $.get("http://127.0.0.1:5000/api/city/" + address, function (data) {
-            $("#city").empty().append("Welcome to "+data.city)
+            $("#city").empty().append("We found you are in City of "+data.city+"\n, Here is some Popular destinations on "+data.city+ "for you!");
             $.get("http://127.0.0.1:5000/api/tourist/" + data.city, function (data) {
                 $('#places').empty();
                 data.forEach(function (item) {
