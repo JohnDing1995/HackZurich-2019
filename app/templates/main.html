@@ -5,49 +5,54 @@
     <meta name="viewport" content="initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/main.css') }}">
+
 </head>
 <body>
 <div id="search">
     <div class="container fill">
         <div class="row vertical-center">
             <div class="col-xs-10 col-xs-offset-1 col-sm-8 col-sm-offset-2 col-md-6 col-md-offset-3">
-                <form>
+                <form id="planForm" action="http://127.0.0.1:5000/api/route">
                     <div class="form-group text-center">
                         <label for="search-query">Plan your city trip here!</label>
-                        <input type="text" class="form-control" id="search-query-city" name="city"
+                        <input type="text" class="form-control" id="search-query-start" name="start"
                                placeholder="Which place you wanna start?">
-                        <input type="text" class="form-control" id="search-query-time" name="time"
+                        <input type="text" class="form-control" id="search-query-end" name="end"
+                               placeholder="Where do you wanna end your trip?">
+                        <input type="text" class="form-control" id="search-query-start-time" name="start-time"
                                placeholder="You wanna leave at?">
+                        <input type="text" class="form-control" id="search-query-end-time" name="end-time"
+                               placeholder="When do you wanna to end your trip?">
+                                <div class="form-group">
+                                    <label for="travel">I prefer to travel by:</label>
+            <select name="travel-method" id="travel" class="form-control">
+                <option value="bus">Bus</option>
+                <option value="car">Car</option>
+            </select>
+        </div>
+
                     </div>
                     <div class="form-group text-center">
-                        <button type="submit" class="btn btn-primary">Get it now!</button>
+                        <button type="button" onclick="getDestinations()" class="btn btn-primary">See my options
+                        </button>
+
                     </div>
 
                     <div class="form-group advanced-search-panel">
                         <div class="panel panel-default">
+                            <div id="city"></div>
                             <ul class="list-group">
                                 <!-- add options here -->
                                 <li class="list-group-item">
                                     <div class="form-group">
                                         <div class="col-xs-4">
-                                            <label for="search-location">Options</label>
+                                            <label for="Available location">Select you favorite places of interest</label>
                                         </div>
 
-                                        <div class="col-xs-8">
-                                            <div class="row">
-                                                <fieldset class="col-xs-12 col-sm-6">
-                                                    <input type="checkbox" name="search-location" value="option1"
-                                                           autocomplete="off" checked>
-                                                    Checkbox 1
-                                                </fieldset>
+                                        <div class="col-xs-8" id="places">
 
-                                                <fieldset class="col-xs-12 col-sm-6">
-                                                    <input type="checkbox" name="search-location" value="Option 2"
-                                                           autocomplete="off" checked>
-                                                    Checkbox 2
-                                                </fieldset>
-                                            </div>
                                         </div>
+
                                     </div>
                                 </li>
 
@@ -56,6 +61,7 @@
 
                         </div>
                     </div>
+                    <button type="submit" class="btn btn-primary">Get the route now!</button>
                 </form>
             </div>
         </div>
@@ -69,12 +75,34 @@
 </div>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
       integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+<script src="{{ url_for('static', filename='js/jquery-3.4.1.min.js') }}/"></script>
+
 <script src="{{ url_for('static', filename='js/map.js') }}/"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ api_key }}&callback=initMap"
-        async defer></script>
-<script
-  src="https://code.jquery.com/jquery-3.4.1.slim.js"
-  integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI="
-  crossorigin="anonymous"></script>
+<script>
+    function getDestinations() {
+        let address = document.getElementById("search-query-start").value;
+        // Get which city
+        $.get("http://127.0.0.1:5000/api/city/" + address, function (data) {
+            $("#city").empty().append("Welcome to "+data.city)
+            $.get("http://127.0.0.1:5000/api/tourist/" + data.city, function (data) {
+                $('#places').empty();
+                data.forEach(function (item) {
+                    console.log(item.name);
+                    var name = item.name.replace(' ', '_');
+                    var latLon = '('+item.lat+','+item.lon+')';
+                        $('<div class="row"><fieldset class="col-xs-12 col-sm-6"><input type="checkbox" name="search-location" value='+latLon+'>\n' +
+                        '<label class="form-check-label" for="'+latLon+'">'+name+' '+item.rating+'🌟'+'</label>'+
+                            '                                                </fieldset>\n' +
+                            '                                            </div>').appendTo('#places');
+
+                    }
+                )
+            })
+        });
+
+    }
+</script>
 </body>
 </html>
