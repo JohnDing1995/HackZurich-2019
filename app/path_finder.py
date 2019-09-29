@@ -10,23 +10,29 @@ from app.utils import get_route
 
 class SiteClass:
     def __init__(self, rating, recommend_time = None, open_time=datetime(year=2019, month=9, day=29, hour=1,minute=0, second=0),
-                 close_time=datetime(year=2019, month=9, day=29, hour=1,minute=0, second=0)):
+                 close_time=datetime(year=2019, month=9, day=30, hour=1,minute=0, second=0)):
         self.open_time = open_time              # needed, datetime formate
         self.close_time = close_time            # needed, datetime formate
-        self.rate = rating/hash(rating) % 90 + 30       # needed
+        self.rate = rating*10000000000000000000/hash(rating) % 90 + 30       # needed
         self.recommend_time = hash(rating) % 90 + 30   # needed, integer, unit is min
+        # if(self.recommend_time % 10 != 0):
+        #     self.recommend_time=self.recommend_time-self.recommend_time%10
+        if(self.recommend_time % 10 == 0):
+            self.recommend_time=self.recommend_time+2
 
     def max_stay_time(self, arrive_time, ags):
         if arrive_time >= self.close_time:
+            print("Time compare:  ",arrive_time,"  ",self.close_time)
             return 0
         else:
-            return min(((self.close_time - arrive_time) /60 // ags.STAY_SLOT), self.recommend_time // ags.STAY_SLOT )
+            # return min(  (datetime.timestamp(self.close_time) - datetime.timestamp(arrive_time)) /60 // ags.STAY_SLOT, self.recommend_time // ags.STAY_SLOT )
+            return int((datetime.timestamp(self.close_time) - datetime.timestamp(arrive_time)) / 60 // ags.STAY_SLOT)
 
     def get_happiness(self, arrive_time, stay_time, ags):
         if arrive_time < self.open_time:
             stay_time -= self.open_time - arrive_time
 
-        if arrive_time >=self.close_time:
+        if arrive_time >= self.close_time:
             return 0
 
         if stay_time <= 0:
@@ -78,21 +84,27 @@ def get_cost(current_time, start, destination, ags):
 
 
 def dfs(current_location, current_time, current_happiness, ags):
-    print(current_location)
+    print("Enter dfs  ",current_location,"Destination amount  ",ags.DESTINATION_AMOUNT)
     if datetime_add(current_time, get_cost(current_time, current_location, ags.DESTINATION_INDEX, ags) + 20)> ags.TIME_LIMITATION:
+        print("OutOfTimeLimitation:\t", current_location)
+        print("\ttime information: ",current_time,'  ',get_cost(current_time, current_location, ags.DESTINATION_INDEX, ags),'  ',ags.TIME_LIMITATION)
         return
     if ags.remain == 0:
-        if current_happiness >= ags.max_happiness:
+        if current_happiness > ags.max_happiness:
             ags.max_happiness = current_happiness
             ags.best_path = copy.deepcopy(ags.current_path)
+        return
 
     # index 0 means starting point
     for nxt in range(1, ags.DESTINATION_AMOUNT + 1):
+        print("visited ",nxt,":  ",ags.visited[nxt])
         if ags.visited[nxt] == 0:
             journey_cost = get_cost(current_time, current_location, nxt, ags)
             # here one step means 10 mins
             # print(nxt , "   " , len(ags.site))
+            print("stay time range\t",ags.site[nxt].max_stay_time(datetime_add(current_time, journey_cost), ags))
             for stay_time in range(1, ags.site[nxt].max_stay_time(datetime_add(current_time, journey_cost), ags) + 1):
+                print("try stay time  ", stay_time)
                 ags.visited[nxt] = 1
                 ags.remain -= 1
 

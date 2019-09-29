@@ -45,6 +45,6 @@ def get_all_route(points, start_time):
         for j in range(0, len(points)):
             if points[i] != points[j]:
                 route = get_route(points[i], points[j], start_time)
-                all_route_info[i][j] = route[0]['legs'][0]['duration']['value']
+                all_route_info[i][j] = route[0]['legs'][0]['duration']['value']//60
     print(all_route_info)
     return all_route_info

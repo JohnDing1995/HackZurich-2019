@@ -52,9 +52,17 @@ def get_tour_route():
     # Get all route
     print(lat_lon_list)
     all_route_mat = get_all_route(lat_lon_list, start_time)
+    # all_route_mat = all_route_mat // 60
     argument = Arguments(len(all_route_mat)-2, end_time, all_route_mat, site_list, DESTINATION_INDEX=len(all_route_mat)-1)
     dfs(0, start_time, 0, argument)
+
     print(argument.__dict__)
+    print(argument.best_path)
+    print(argument.site[1].rate," ",argument.site[1].recommend_time)
+    print(argument.site[2].rate," ",argument.site[2].recommend_time)
+    print(argument.site[3].rate," ",argument.site[3].recommend_time)
+
+
     return jsonify()
 
 
